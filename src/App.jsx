@@ -1,23 +1,19 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/NavbarSection/Navbar";
+import Home from "./components/HomeSection/Home";
+import About from "./components/AboutSection/About";
+import Contact from "./components/ContactSection/Contact";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div className="text-center mt-10">
-        <h1 className="text-3xl font-bold text-purple-600">
-          Hello Manthan! 🚀
-        </h1>
-        <p className="mt-2 text-gray-500">
-          Tailwind CSS via Vite plugin is working!
-        </p>
-      </div>
-      <h1 className="text-3xl font-bold underline">Vite + React</h1>
-    </>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </Router>
   );
 }
 
