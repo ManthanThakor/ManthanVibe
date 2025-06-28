@@ -12,114 +12,89 @@ const easeInOutCubic = (t) => {
 
 // Define icons for the home section with their movement patterns
 const homeIcons = [
-  // Initial static icons - visible from start
+  // First icon - starts center, moves diagonal left-down
   {
     url: "/icons/cube-abstract-shape-animated-3d-icon-1284210180529.glb",
-    startPosition: [-12, -8, 2],
-    endPosition: [-25, -15, 2],
-    triggerStart: -0.1,
-    triggerEnd: 0.4, // Longer duration before exit
-    isStatic: false,
-    scale: 0.1,
-    floatAmount: 0.5, // Slight float
+    startPosition: [-8, 5, 2], // Initial static position
+    endPosition: [-35, -15, 2], // Moves far left and down
+    triggerStart: 0.15, // Starts moving at 15% scroll
+    triggerEnd: 0.7, // Completes movement by 70% scroll
+    isStatic: true, // Make it visible immediately
+    scale: 2.0,
+    floatAmount: 0.3, // Gentle float
   },
+  // Second icon - starts center, moves diagonal right-down
   {
     url: "/icons/sphere-abstract-shape-animated-3d-icon-430778994990.glb",
-    startPosition: [12, -8, 2],
-    endPosition: [25, -15, 2],
-    triggerStart: -0.1,
-    triggerEnd: 0.4,
-    isStatic: false,
-    scale: 3.0,
-    floatAmount: 0.5,
+    startPosition: [8, 5, 2], // Initial static position
+    endPosition: [35, -15, 2], // Moves far right and down
+    triggerStart: 0.15, // Starts moving at 15% scroll
+    triggerEnd: 0.7, // Completes movement by 70% scroll
+    isStatic: true, // Make it visible immediately
+    scale: 2.0,
+    floatAmount: 0.3, // Gentle float
   },
-  // Additional initial icons floating above
   {
     url: "/icons/star-abstract-shape-animated-3d-icon-1042881958811.glb",
-    startPosition: [-8, 5, 2],
-    endPosition: [-20, -10, 2],
-    triggerStart: -0.1,
-    triggerEnd: 0.45,
-    scale: 2.2,
-    floatAmount: 1,
+    startPosition: [-8, 12, 2],
+    endPosition: [-25, 12, 2],
+    triggerStart: 0,
+    triggerEnd: 0.8,
+    isStatic: true, // This makes it show immediately
+    scale: 1.8,
+    floatAmount: 0.4,
   },
   {
     url: "/icons/twisted-circle-abstract-shape-animated-3d-icon-1057449839409.glb",
-    startPosition: [8, 5, 2],
-    endPosition: [20, -10, 2],
-    triggerStart: -0.1,
-    triggerEnd: 0.45,
-    scale: 2.2,
-    floatAmount: 1,
+    startPosition: [8, 12, 2],
+    endPosition: [25, 12, 2],
+    triggerStart: 0,
+    triggerEnd: 0.8,
+    isStatic: true, // This makes it show immediately
+    scale: 1.8,
+    floatAmount: 0.4,
   },
 
-  // First wave - Appears as initial icons start to move
+  // Animated icons that appear on scroll
   {
     url: "/icons/bouncing-cube-animated-3d-icon-1317725137205.glb",
-    startPosition: [-15, 15, 2],
-    endPosition: [-15, -8, 2],
-    triggerStart: 0.2, // Start later
-    triggerEnd: 0.7, // Much longer duration
-    scale: 2.2,
-    floatAmount: 2,
+    startPosition: [-10, -5, 2],
+    endPosition: [-25, -5, 2],
+    triggerStart: 0.2,
+    triggerEnd: 0.9,
+    isStatic: false,
+    scale: 2.0,
+    floatAmount: 0.6,
   },
   {
     url: "/icons/floating-cubes-loading-animated-3d-icon-514489560289.glb",
-    startPosition: [15, 15, 2],
-    endPosition: [15, -8, 2],
+    startPosition: [10, -5, 2],
+    endPosition: [25, -5, 2],
     triggerStart: 0.2,
-    triggerEnd: 0.7,
-    scale: 2.2,
-    floatAmount: 2,
+    triggerEnd: 0.9,
+    isStatic: false,
+    scale: 2.0,
+    floatAmount: 0.6,
   },
   {
     url: "/icons/rotating-cube-loading-animated-3d-icon-323338265846.glb",
-    startPosition: [0, 18, 2],
-    endPosition: [0, -5, 2],
-    triggerStart: 0.25,
-    triggerEnd: 0.75,
-    scale: 2.8,
-    floatAmount: 1.5,
+    startPosition: [0, 8, 2],
+    endPosition: [-20, 8, 2],
+    triggerStart: 0.3,
+    triggerEnd: 1.0,
+    isStatic: false,
+    scale: 2.2,
+    floatAmount: 0.5,
   },
-
-  // Second wave - Diagonal movement pattern
   {
     url: "/icons/waving-plane-abstract-animated-3d-icon-772525492989.glb",
-    startPosition: [-20, 10, 2],
-    endPosition: [-5, -12, 2],
-    triggerStart: 0.4,
-    triggerEnd: 0.85,
-    scale: 2.0,
-    floatAmount: 1,
-  },
-  {
-    url: "/icons/dropping-sphere-loading-animated-3d-icon-713943018271.glb",
-    startPosition: [20, 10, 2],
-    endPosition: [5, -12, 2],
-    triggerStart: 0.4,
-    triggerEnd: 0.85,
-    scale: 2.0,
-    floatAmount: 1,
-  },
-
-  // Final wave - Spiral pattern
-  {
-    url: "/icons/spheres-abstract-shape-animated-3d-icon-1668763368472.glb",
-    startPosition: [-8, 20, 2],
-    endPosition: [-15, -8, 2],
-    triggerStart: 0.6,
-    triggerEnd: 0.95,
-    scale: 2.5,
-    floatAmount: 3,
-  },
-  {
-    url: "/icons/circle-abstract-shape-animated-3d-icon-89237357186.glb",
-    startPosition: [8, 20, 2],
-    endPosition: [15, -8, 2],
-    triggerStart: 0.6,
-    triggerEnd: 0.95,
-    scale: 2.5,
-    floatAmount: 3,
+    startPosition: [0, 8, 2],
+    endPosition: [20, 8, 2],
+    triggerStart: 0.3,
+    triggerEnd: 1.0,
+    isStatic: false,
+    scale: 2.2,
+    floatAmount: 0.5,
   },
 ];
 
@@ -173,8 +148,7 @@ function ScrollIcon({
 
   // Calculate current position with floating effect
   const currentPosition = useMemo(() => {
-    if (isStatic) return startPosition;
-
+    // For initially static icons that will move later
     let progress = 0;
 
     if (scrollProgress >= triggerStart && scrollProgress <= triggerEnd) {
@@ -186,6 +160,21 @@ function ScrollIcon({
       progress = 1;
     }
 
+    // If static and before trigger point, stay at start position
+    if (isStatic && scrollProgress < triggerStart) {
+      const x = startPosition[0];
+      let y = startPosition[1];
+      const z = startPosition[2];
+
+      // Add floating effect if specified
+      if (floatAmount > 0) {
+        y += Math.sin(time.current * 0.5) * floatAmount;
+      }
+
+      return [x, y, z];
+    }
+
+    // Otherwise calculate animated position
     const x = startPosition[0] + (endPosition[0] - startPosition[0]) * progress;
     let y = startPosition[1] + (endPosition[1] - startPosition[1]) * progress;
     const z = startPosition[2] + (endPosition[2] - startPosition[2]) * progress;

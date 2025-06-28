@@ -69,7 +69,7 @@ const Home = () => {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-black/80 via-gray-900/50 to-black/80"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       <Animated3DBackground />
       {/* Decorative Floating Elements */}
