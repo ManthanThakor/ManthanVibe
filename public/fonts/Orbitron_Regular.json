@@ -1,0 +1,76 @@
+{
+  "glyphs": {
+    "L": {
+      "x_min": 0,
+      "x_max": 100,
+      "ha": 120,
+      "o": "m 0 0 l 100 0 l 100 20 l 20 20 l 20 100 l 0 100 l 0 0 z"
+    },
+    "O": {
+      "x_min": 0,
+      "x_max": 100,
+      "ha": 120,
+      "o": "m 50 0 c 77 0 100 23 100 50 c 100 77 77 100 50 100 c 23 100 0 77 0 50 c 0 23 23 0 50 0 z m 0 20 c -33 0 -50 17 -50 30 c 0 13 17 30 50 30 c 33 0 50 -17 50 -30 c 0 -13 -17 -30 -50 -30 z"
+    },
+    "A": {
+      "x_min": 0,
+      "x_max": 100,
+      "ha": 120,
+      "o": "m 0 0 l 20 0 l 30 80 l 70 0 l 80 0 l 100 100 l 80 100 l 70 20 l 30 100 l 0 0 z"
+    },
+    "D": {
+      "x_min": 0,
+      "x_max": 100,
+      "ha": 120,
+      "o": "m 0 0 l 50 0 c 77 0 100 23 100 50 c 100 77 77 100 50 100 l 0 100 l 0 0 z m 20 20 l 20 80 l 50 80 c 33 0 50 -17 50 -30 c 0 -13 -17 -30 -50 -30 l -20 0 l 0 -20 z"
+    },
+    "I": {
+      "x_min": 0,
+      "x_max": 20,
+      "ha": 40,
+      "o": "m 0 0 l 20 0 l 20 100 l 0 100 l 0 0 z"
+    },
+    "N": {
+      "x_min": 0,
+      "x_max": 100,
+      "ha": 120,
+      "o": "m 0 0 l 20 0 l 20 60 l 60 0 l 60 -60 l 80 0 l 80 100 l 60 100 l 60 40 l 20 40 l 20 100 l 0 100 l 0 0 z"
+    },
+    "G": {
+      "x_min": 0,
+      "x_max": 100,
+      "ha": 120,
+      "o": "m 50 0 c 77 0 100 23 100 50 l 100 100 l 80 100 l 80 50 c 80 37 63 20 50 20 c 37 20 20 37 20 50 c 20 63 37 80 50 80 c 63 80 80 63 80 50 l 100 50 l 100 100 l 50 100 c 23 100 0 77 0 50 c 0 23 23 0 50 0 z"
+    },
+    ".": {
+      "x_min": 0,
+      "x_max": 20,
+      "ha": 40,
+      "o": "m 0 0 l 20 0 l 20 20 l 0 20 l 0 0 z"
+    }
+  },
+  "familyName": "Orbitron",
+  "ascender": 100,
+  "descender": 0,
+  "underlinePosition": -10,
+  "underlineThickness": 5,
+  "boundingBox": {
+    "yMin": 0,
+    "xMin": 0,
+    "yMax": 100,
+    "xMax": 100
+  },
+  "resolution": 40,
+  "original_font_information": {
+    "format": 0,
+    "copyright": "Copyright (c) 2009 Matt McInerney",
+    "fontFamily": "Orbitron",
+    "fontSubfamily": "Regular",
+    "uniqueID": "Orbitron Regular",
+    "fullName": "Orbitron Regular",
+    "version": "Version 1.0",
+    "postScriptName": "Orbitron-Regular"
+  },
+  "cssFontWeight": "normal",
+  "cssFontStyle": "normal"
+}
