@@ -5,6 +5,7 @@ const usePreloader = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
     const images = document.querySelectorAll("img");
     const totalImages = images.length;
     let loadedImages = 0;
@@ -50,6 +51,7 @@ const usePreloader = () => {
     };
 
     const preloadAll = async () => {
+      if (!mounted) return;
       try {
         // Start with 5% progress
         setProgress(5);
@@ -85,10 +87,14 @@ const usePreloader = () => {
 
           if (newProgress >= 100) {
             clearInterval(progressInterval);
-            // Add a small delay before hiding the preloader
-            setTimeout(() => {
-              setIsLoading(false);
-            }, 10); // Minimal delay, almost immediate
+            // Ensure state updates and animations are synchronized
+            setProgress(100);
+            // Use RAF to ensure DOM is updated before triggering exit
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                setIsLoading(false);
+              });
+            });
           }
         }, 50);
       } catch (error) {
@@ -98,6 +104,10 @@ const usePreloader = () => {
     };
 
     preloadAll();
+    
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return { progress, isLoading };
