@@ -10,10 +10,10 @@
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  perspective: 1000px;
   overflow: hidden;
   opacity: 1;
-  transition: opacity 0.3s ease-out;
+  /* Simplified transition for fade out */
+  transition: opacity 0.8s ease-out;
 }
 
 .exit-flash {
@@ -29,71 +29,8 @@
   pointer-events: none;
 }
 
-.explosion-particle {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: var(--size);
-  height: var(--size);
-  background: #3becc3;
-  border-radius: 50%;
-  transform: translate(0, 0) scale(0);
-  transition: all var(--speed) cubic-bezier(0.165, 0.84, 0.44, 1);
-  transition-delay: var(--delay);
-  opacity: 1;
-  z-index: 10001;
-  box-shadow: 0 0 20px #3becc3, 0 0 40px #3becc3;
-  filter: brightness(1.5);
-}
-
-.explosion-particle::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, #3becc3 0%, transparent 70%);
-  transform: translate(-50%, -50%);
-  opacity: 0.5;
-}
-
-.shockwave {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: transparent;
-  border: 2px solid #3becc3;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10002;
-  opacity: 0;
-}
-
-.shockwave-active {
-  animation: shockwaveEffect 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
-
-@keyframes shockwaveEffect {
-  0% {
-    width: 0;
-    height: 0;
-    opacity: 1;
-    border-width: 2px;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    width: 300vw;
-    height: 300vw;
-    opacity: 0;
-    border-width: 1px;
-  }
-}
-/* Add to your PreLoader.css */
+/* Removed explosion-particle and shockwave related styles as they are no longer used */
+/* canvas style remains */
 canvas {
   position: fixed;
   top: 0;
@@ -117,21 +54,7 @@ canvas {
   filter: drop-shadow(0 0 20px #3becc3);
 }
 
-.loading-text {
-  color: #3becc3;
-  font-size: 24px;
-  font-weight: bold;
-  letter-spacing: 8px;
-  opacity: 0;
-  text-shadow: 0 0 20px #3becc3;
-}
-
-.loading-dots {
-  color: #3becc3;
-  font-size: 24px;
-  opacity: 0;
-  text-shadow: 0 0 10px #3becc3;
-}
+/* Removed loading-text and loading-dots as they are not used in JSX */
 
 /* 3D Loading Bar */
 .loading-bar-container {
@@ -141,6 +64,8 @@ canvas {
   margin-top: 30px;
   perspective: 400px;
   transform-style: preserve-3d;
+  /* Added transition for smoother fade out */
+  transition: opacity 0.7s ease-out;
 }
 
 .loading-bar-outer {
@@ -199,176 +124,59 @@ canvas {
   z-index: 5;
 }
 
-/* Exit Animations */
-.letter-exit {
-  animation: letterExitAnim 0.6s ease-in-out forwards;
+/* Water wave effect */
+.preloader-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(59, 236, 195, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  animation: waterWave 8s infinite alternate;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.logo-exit {
-  animation: logo3DExitAnim 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+@keyframes waterWave {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(10px) translateY(5px) rotate(2deg);
+  }
+  50% {
+    transform: translateX(-5px) translateY(10px) rotate(-1deg);
+  }
+  75% {
+    transform: translateX(15px) translateY(-5px) rotate(3deg);
+  }
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
 }
 
-.loading-bar-exit {
-  animation: loadingBar3DExitAnim 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)
-    forwards;
-}
-
-.particles-exit {
-  animation: particles3DExitAnim 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)
-    forwards;
-}
-
-.preloader-exit {
-  animation: preloaderExitAnim 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)
-    forwards !important;
-}
+/* Exit Animations (simplified) */
+/* Removed specific letter-exit, logo-exit, loading-bar-exit, particles-exit classes */
+/* The main preloader-container now handles the exit animation */
 
 @keyframes preloaderExitAnim {
   0% {
-    transform: perspective(2000px) rotateY(0deg) rotateX(0deg) scale(1)
-      translateZ(0);
-    opacity: 1;
-    filter: blur(0) brightness(1);
-  }
-  50% {
-    transform: perspective(2000px) rotateY(45deg) rotateX(-30deg) scale(1.2)
-      translateZ(500px);
-    opacity: 0.7;
-    filter: blur(5px) brightness(2);
-  }
-  75% {
-    transform: perspective(2000px) rotateY(180deg) rotateX(-60deg) scale(1.5)
-      translateZ(1000px);
-    opacity: 0.3;
-    filter: blur(10px) brightness(3);
-  }
-  100% {
-    transform: perspective(2000px) rotateY(360deg) rotateX(-90deg) scale(0)
-      translateZ(2000px);
-    opacity: 0;
-    filter: blur(20px) brightness(0);
-  }
-}
-
-.letter {
-  --exit-x: 0vw;
-  --exit-y: 0vh;
-  --exit-z: 0px;
-  --exit-rotate: 0deg;
-  --exit-scale: 1;
-  --exit-perspective: 1000px;
-}
-
-@keyframes letterExitAnim {
-  0% {
-    transform: perspective(var(--exit-perspective)) rotateX(0) rotateY(0)
-      translate3d(0, 0, 0) scale(1);
-    opacity: 1;
-    filter: brightness(1) blur(0) saturate(1);
-  }
-  25% {
-    transform: perspective(var(--exit-perspective)) rotateX(45deg)
-      rotateY(45deg)
-      translate3d(
-        calc(var(--exit-x) * 0.3),
-        calc(var(--exit-y) * 0.3),
-        calc(var(--exit-z) * 0.3)
-      )
-      scale(calc(var(--exit-scale) * 0.5));
-    opacity: 0.9;
-    filter: brightness(2) blur(1px) saturate(1.5);
-  }
-  75% {
-    transform: perspective(var(--exit-perspective)) rotateX(180deg)
-      rotateY(180deg)
-      translate3d(
-        calc(var(--exit-x) * 0.7),
-        calc(var(--exit-y) * 0.7),
-        calc(var(--exit-z) * 0.7)
-      )
-      scale(calc(var(--exit-scale) * 0.8));
-    opacity: 0.5;
-    filter: brightness(3) blur(2px) saturate(2);
-  }
-  100% {
-    transform: perspective(var(--exit-perspective)) rotateX(var(--exit-rotate))
-      rotateY(var(--exit-rotate))
-      translate3d(var(--exit-x), var(--exit-y), var(--exit-z))
-      scale(var(--exit-scale));
-    opacity: 0;
-    filter: brightness(0) blur(4px) saturate(0);
-  }
-}
-
-@keyframes logo3DExitAnim {
-  0% {
-    transform: perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px)
-      scale(1);
-    opacity: 1;
-    filter: brightness(1) blur(0);
-  }
-  30% {
-    transform: perspective(1200px) rotateX(-20deg) rotateY(45deg)
-      translateZ(100px) scale(1.3);
-    opacity: 0.9;
-    filter: brightness(2) blur(2px);
-  }
-  70% {
-    transform: perspective(1200px) rotateX(-60deg) rotateY(180deg)
-      translateZ(400px) scale(2);
-    opacity: 0.4;
-    filter: brightness(3) blur(5px);
-  }
-  100% {
-    transform: perspective(1200px) rotateX(-90deg) rotateY(360deg)
-      translateZ(1000px) scale(4);
-    opacity: 0;
-    filter: brightness(0) blur(10px);
-  }
-}
-
-@keyframes loadingBar3DExitAnim {
-  0% {
-    transform: perspective(800px) rotateX(45deg) rotateY(0deg) translateZ(0px)
-      scale(1);
     opacity: 1;
   }
-  40% {
-    transform: perspective(800px) rotateX(20deg) rotateY(90deg)
-      translateZ(150px) scale(1.4);
-    opacity: 0.8;
-  }
   100% {
-    transform: perspective(800px) rotateX(-45deg) rotateY(270deg)
-      translateZ(600px) scale(2.5);
     opacity: 0;
   }
 }
 
-@keyframes particles3DExitAnim {
-  0% {
-    transform: perspective(1000px) translateZ(0px) scale(1) rotate(0deg);
-    opacity: 1;
-  }
-  50% {
-    transform: perspective(1000px) translateZ(300px) scale(1.5) rotate(180deg);
-    opacity: 0.6;
-  }
-  100% {
-    transform: perspective(1000px) translateZ(600px) scale(0) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-/* ADD THESE NEW CSS CLASSES: */
-.logo-exit {
-  animation: logo3DExitAnim 1.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-.loading-bar-exit {
-  animation: loadingBar3DExitAnim 1.1s cubic-bezier(0.68, -0.55, 0.265, 1.55)
-    forwards;
-}
+/* Removed individual letter exit animations */
+/* Removed logo3DExitAnim */
+/* Removed loadingBar3DExitAnim */
+/* Removed particles3DExitAnim */
 
 @keyframes pulse {
   0%,
@@ -382,7 +190,7 @@ canvas {
   }
 }
 
-/* Loading Bar Animation */
+/* Loading Bar Animation (remains for initial loading) */
 @keyframes loadingBarGlow {
   0%,
   100% {
@@ -405,10 +213,9 @@ canvas {
   opacity: 0;
   z-index: 10;
   animation: glow 2s ease-in-out infinite alternate;
-
   filter: drop-shadow(16px 16px 20px #3becc3) invert(75%);
-  transition: filter 0.3s ease-in-out;
-  will-change: transform, filter;
+  transition: filter 0.3s ease-in-out, opacity 0.7s ease-out; /* Added opacity transition */
+  will-change: transform, filter, opacity; /* Added opacity to will-change */
 }
 
 @keyframes glow {

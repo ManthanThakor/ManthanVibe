@@ -14,17 +14,17 @@ const usePreloader = () => {
       return new Promise((resolve) => {
         if (img.complete) {
           loadedImages++;
-          setProgress((loadedImages / totalImages) * 100);
+          // setProgress dynamically based on total preload process, not just image count
           resolve();
         } else {
           img.onload = () => {
             loadedImages++;
-            setProgress((loadedImages / totalImages) * 100);
+            // setProgress dynamically
             resolve();
           };
           img.onerror = () => {
             loadedImages++;
-            setProgress((loadedImages / totalImages) * 100);
+            // setProgress dynamically
             resolve();
           };
         }
@@ -44,59 +44,58 @@ const usePreloader = () => {
 
     const preloadModels = () => {
       return new Promise((resolve) => {
+        // Simulate 3D model loading for a shorter duration
         setTimeout(() => {
           resolve();
-        }, 1000);
+        }, 500); // Reduced from 1000ms
       });
     };
 
     const preloadAll = async () => {
       if (!mounted) return;
       try {
-        // Start with 5% progress
+        // Initial progress
         setProgress(5);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 200)); // Shorter initial delay
 
-        // Preload fonts (up to 20%)
+        // Preload fonts (up to ~25%)
         await preloadFonts();
-        setProgress(20);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        setProgress(25);
+        await new Promise((resolve) => setTimeout(resolve, 300)); // Shorter delay
 
-        // Preload images (up to 50%)
+        // Preload images (up to ~55%)
         await Promise.all(Array.from(images).map(preloadImage));
-        setProgress(50);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        setProgress(55);
+        await new Promise((resolve) => setTimeout(resolve, 300)); // Shorter delay
 
-        // Preload 3D models (up to 80%)
+        // Preload 3D models (up to ~85%)
         await preloadModels();
-        setProgress(80);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        setProgress(85);
+        await new Promise((resolve) => setTimeout(resolve, 300)); // Shorter delay
 
-        // Ensure we reach exactly 4 seconds
+        // Ensure we reach approximately 3.5 seconds total
         const startTime = Date.now();
-        const targetDuration = 4000; // 4 seconds in milliseconds
+        const targetDuration = 3500; // Target 3.5 seconds in milliseconds
 
-        // Gradually increase progress to 100%
         const progressInterval = setInterval(() => {
           const elapsedTime = Date.now() - startTime;
+          // Interpolate progress smoothly to 100% within the remaining time
           const newProgress = Math.min(
             100,
-            80 + (elapsedTime / targetDuration) * 20
+            85 + (elapsedTime / (targetDuration * 0.5)) * 15 // Last 15% takes longer
           );
           setProgress(Math.round(newProgress));
 
           if (newProgress >= 100) {
             clearInterval(progressInterval);
-            // Ensure state updates and animations are synchronized
             setProgress(100);
-            // Use RAF to ensure DOM is updated before triggering exit
             requestAnimationFrame(() => {
               requestAnimationFrame(() => {
                 setIsLoading(false);
               });
             });
           }
-        }, 50);
+        }, 30); // Faster interval for smoother updates
       } catch (error) {
         console.error("Error during preloading:", error);
         setIsLoading(false);
@@ -104,7 +103,7 @@ const usePreloader = () => {
     };
 
     preloadAll();
-    
+
     return () => {
       mounted = false;
     };

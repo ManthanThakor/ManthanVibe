@@ -96,26 +96,6 @@ const PreLoader = ({ progress, isLoading }) => {
       const hue = 0.45 + Math.sin(colorTime * 0.5) * 0.05;
       particleSystem.material.color.setHSL(hue, 0.9, 0.6);
 
-      // Check if particles are exiting
-      if (
-        particlesRef.current &&
-        particlesRef.current.classList.contains("particles-exit")
-      ) {
-        // Add spiral effect during exit
-        particleSystem.rotation.x += 0.05;
-        particleSystem.rotation.y += 0.05;
-        particleSystem.rotation.z += 0.05;
-
-        // Expand particles
-        const positions = particleSystem.geometry.attributes.position.array;
-        for (let i = 0; i < positions.length; i += 3) {
-          positions[i] *= 1.02;
-          positions[i + 1] *= 1.02;
-          positions[i + 2] *= 1.02;
-        }
-        particleSystem.geometry.attributes.position.needsUpdate = true;
-      }
-
       renderer.render(scene, camera);
     }
     animate();
@@ -144,113 +124,45 @@ const PreLoader = ({ progress, isLoading }) => {
       setHasStartedExit(true);
       const exitSequence = async () => {
         try {
-          // Create an initial flash effect
-          const initialFlash = document.createElement("div");
-          initialFlash.className = "exit-flash";
-          containerRef.current.appendChild(initialFlash);
-
-          // 1. Animate the loading bar out with dramatic effect
-          const loadingBar = document.querySelector(".loading-bar-container");
-          if (loadingBar) {
-            loadingBar.style.transform = "scale(1.2)";
-            requestAnimationFrame(() => {
-              loadingBar.classList.add("loading-bar-exit");
-            });
-          }
-
-          // 2. Animate the logo with a glow effect
-          const logo = document.querySelector(".preloader-logo");
-          if (logo) {
-            logo.style.filter = "brightness(2) drop-shadow(0 0 30px #3becc3)";
-            logo.classList.add("logo-exit");
-          }
-
-          // 3. Animate each letter with its custom exit animation
-          const letters = document.querySelectorAll(".letter");
-          const directions = [
-            { x: -1, y: -1, z: 1 }, // For first letter (M)
-            { x: 0, y: -1.5, z: 1.5 }, // For second (V)
-            { x: 1, y: -1, z: 1 }, // For third (I)
-            { x: -1.5, y: 0, z: 2 }, // For fourth (B)
-            { x: 1.5, y: 0, z: 2 }, // For fifth (E)
-          ];
-          letters.forEach((letter, i) => {
-            const direction = directions[i % directions.length];
-            const rotation =
-              (Math.random() > 0.5 ? 1 : -1) * (720 + Math.random() * 360);
-            const scale = 2 + Math.random() * 2;
-            letter.style.setProperty("--exit-x", `${direction.x * 150}vw`);
-            letter.style.setProperty("--exit-y", `${direction.y * 150}vh`);
-            letter.style.setProperty("--exit-z", `${direction.z * 1000}px`);
-            letter.style.setProperty("--exit-rotate", `${rotation}deg`);
-            letter.style.setProperty("--exit-scale", `${scale}`);
-            letter.style.setProperty(
-              "--exit-perspective",
-              `${1000 + Math.random() * 1000}px`
-            );
-            letter.style.animationDuration = "1.2s";
-            letter.style.animationDelay = `${i * 50}ms`;
-            letter.classList.add("letter-exit");
-          });
-
-          // 4. Particle exit animation with shockwave and explosion effects
-          if (particlesRef.current) {
-            const shockwave = document.createElement("div");
-            shockwave.className = "shockwave";
-            containerRef.current.appendChild(shockwave);
-
-            const explosionParticles = new Array(30).fill(null).map(() => {
-              const particle = document.createElement("div");
-              particle.className = "explosion-particle";
-              particle.style.setProperty(
-                "--angle",
-                `${Math.random() * 360}deg`
-              );
-              particle.style.setProperty(
-                "--speed",
-                `${0.3 + Math.random() * 0.7}s`
-              );
-              particle.style.setProperty(
-                "--size",
-                `${5 + Math.random() * 15}px`
-              );
-              particle.style.setProperty("--delay", `${Math.random() * 0.1}s`);
-              containerRef.current.appendChild(particle);
-              return particle;
-            });
-            particlesRef.current.style.filter = "brightness(3)";
-            shockwave.classList.add("shockwave-active");
-            particlesRef.current.classList.add("particles-exit");
-
-            explosionParticles.forEach((particle, index) => {
-              const angle = (index / explosionParticles.length) * Math.PI * 2;
-              const distance = 150 + Math.random() * 150;
-              particle.style.transform = `translate(${
-                Math.cos(angle) * distance
-              }vw, ${Math.sin(angle) * distance}vh)`;
-              particle.style.opacity = "0";
-            });
-
-            setTimeout(() => {
-              shockwave.remove();
-              explosionParticles.forEach((particle) => particle.remove());
-            }, 1000);
-          }
-
-          // 5. Final flash and container exit
+          // Final flash and container exit (simplified)
           const finalFlash = document.createElement("div");
           finalFlash.className = "exit-flash";
           containerRef.current.appendChild(finalFlash);
-          setTimeout(() => {
-            finalFlash.style.opacity = "1";
-            setTimeout(() => {
-              containerRef.current.classList.add("preloader-exit");
-              setTimeout(() => {
-                finalFlash.remove();
+
+          // Animate opacity of the preloader container for a smooth fade out
+          anime({
+            targets: containerRef.current,
+            opacity: [1, 0],
+            duration: 800, // Duration for fade out
+            easing: "easeOutQuad",
+            complete: () => {
+              if (containerRef.current) {
                 containerRef.current.style.display = "none";
-              }, 150);
-            }, 150);
-          }, 150);
+              }
+              finalFlash.remove();
+            },
+          });
+
+          // Animate out the logo and loading bar along with the main container
+          const logo = document.querySelector(".preloader-logo");
+          const loadingBar = document.querySelector(".loading-bar-container");
+
+          if (logo) {
+            anime({
+              targets: logo,
+              opacity: [1, 0],
+              duration: 700,
+              easing: "easeOutQuad",
+            });
+          }
+          if (loadingBar) {
+            anime({
+              targets: loadingBar,
+              opacity: [1, 0],
+              duration: 700,
+              easing: "easeOutQuad",
+            });
+          }
         } catch (error) {
           console.error("Error during exit sequence:", error);
         }
@@ -275,7 +187,7 @@ const PreLoader = ({ progress, isLoading }) => {
     const progressAnimation = anime({
       targets: ".loading-bar-inner",
       width: ["0%", "100%"],
-      duration: 4000,
+      duration: 3000, // Reduced duration for faster preload
       easing: "easeInOutQuart",
       update: function (anim) {
         setLoadingProgress(Math.round(anim.progress));
@@ -288,20 +200,20 @@ const PreLoader = ({ progress, isLoading }) => {
       targets: ".preloader-logo",
       opacity: [0, 1],
       scale: [0.5, 1.1, 1],
-      duration: 1500,
+      duration: 1200, // Reduced duration
       easing: "easeInOutQuad",
-      delay: 300,
+      delay: 200, // Reduced delay
       complete: () => {
         // After appearing, apply subtle glowing orbit motion
         anime({
           targets: ".preloader-logo",
           translateX: [
-            { value: 10, duration: 1500 },
-            { value: -10, duration: 1500 },
+            { value: 10, duration: 1200 }, // Reduced duration
+            { value: -10, duration: 1200 }, // Reduced duration
           ],
           translateY: [
-            { value: 5, duration: 1500 },
-            { value: -5, duration: 1500 },
+            { value: 5, duration: 1200 }, // Reduced duration
+            { value: -5, duration: 1200 }, // Reduced duration
           ],
           direction: "alternate",
           loop: true,
@@ -310,7 +222,7 @@ const PreLoader = ({ progress, isLoading }) => {
       },
     });
 
-    // Letters animation timeline
+    // Letters animation timeline (retained for initial entry)
     const timeline = anime.timeline({
       easing: "easeInOutQuad",
       complete: function () {
@@ -330,66 +242,66 @@ const PreLoader = ({ progress, isLoading }) => {
         targets: ".letter-m .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 600,
-        offset: 500,
+        duration: 500, // Reduced duration
+        offset: 400, // Reduced offset
       })
       .add({
         targets: ".letter-m .letter-fill",
         opacity: [0, 0.7],
-        duration: 300,
-        offset: 1000,
+        duration: 250, // Reduced duration
+        offset: 800, // Reduced offset
       })
       .add({
         targets: ".letter-v .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 600,
-        offset: 1200,
+        duration: 500, // Reduced duration
+        offset: 1000, // Reduced offset
       })
       .add({
         targets: ".letter-v .letter-fill",
         opacity: [0, 0.7],
-        duration: 300,
-        offset: 1700,
+        duration: 250, // Reduced duration
+        offset: 1400, // Reduced offset
       })
       .add({
         targets: ".letter-i .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 600,
-        offset: 1900,
+        duration: 500, // Reduced duration
+        offset: 1600, // Reduced offset
       })
       .add({
         targets: ".letter-i .letter-fill",
         opacity: [0, 0.7],
-        duration: 300,
-        offset: 2400,
+        duration: 250, // Reduced duration
+        offset: 2000, // Reduced offset
       })
       .add({
         targets: ".letter-b .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 600,
-        offset: 2600,
+        duration: 500, // Reduced duration
+        offset: 2200, // Reduced offset
       })
       .add({
         targets: ".letter-b .letter-fill",
         opacity: [0, 0.7],
-        duration: 300,
-        offset: 3100,
+        duration: 250, // Reduced duration
+        offset: 2600, // Reduced offset
       })
       .add({
         targets: ".letter-e .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 600,
-        offset: 3300,
+        duration: 500, // Reduced duration
+        offset: 2800, // Reduced offset
       })
       .add({
         targets: ".letter-e .letter-fill",
         opacity: [0, 0.7],
-        duration: 300,
-        offset: 3700,
+        duration: 250, // Reduced duration
+        offset: 3100, // Reduced offset
       });
 
     timelineRef.current = timeline;
