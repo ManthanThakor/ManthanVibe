@@ -10,9 +10,9 @@
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  perspective: 1000px;
   overflow: hidden;
   opacity: 1;
-  /* Simplified transition for fade out */
   transition: opacity 0.8s ease-out;
 }
 
@@ -29,7 +29,6 @@
   pointer-events: none;
 }
 
-/* Removed explosion-particle and shockwave related styles as they are no longer used */
 /* canvas style remains */
 canvas {
   position: fixed;
@@ -38,34 +37,54 @@ canvas {
   z-index: 1;
   pointer-events: none;
 }
+
 .logo-container {
-  position: relative;
+  position: relative; /* Keep this relative for absolute positioned children */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
-  width: 100%;
+  gap: 30px; /* Default gap between elements */
+  width: 100%; /* Occupy full width of preloader-container for centering */
   z-index: 10;
   transform-style: preserve-3d;
 }
 
-.mvibe-logo {
-  width: 100%;
-  filter: drop-shadow(0 0 20px #3becc3);
+/* --- REVISED LOGO STYLES --- */
+.preloader-logo {
+  position: absolute; /* Revert to absolute positioning */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust for true centering */
+  width: 120px; /* Default size for desktop */
+  height: auto;
+  opacity: 0;
+  z-index: 10;
+  animation: glow 2s ease-in-out infinite alternate;
+  filter: drop-shadow(16px 16px 20px #3becc3) invert(75%);
+  transition: filter 0.3s ease-in-out, opacity 0.7s ease-out,
+    width 0.3s ease-out;
+  will-change: transform, filter, opacity, width;
 }
 
-/* Removed loading-text and loading-dots as they are not used in JSX */
+.mvibe-logo {
+  width: 100%; /* Set a default pixel width for desktop */
+  height: 300px; /* Set a default pixel height (adjust to maintain aspect ratio 500/300 = 1.66) */
+
+  filter: drop-shadow(0 0 20px #3becc3);
+  transition: width 0.3s ease-out, height 0.3s ease-out; /* Smooth transitions */
+}
+/* --- END REVISED LOGO STYLES --- */
 
 /* 3D Loading Bar */
 .loading-bar-container {
   position: relative;
-  width: 300px;
+  width: 60%; /* Default size for desktop */
   height: 20px;
-  margin-top: 30px;
+  margin-top: 30px; /* Adjust spacing as needed */
   perspective: 400px;
   transform-style: preserve-3d;
-  /* Added transition for smoother fade out */
-  transition: opacity 0.7s ease-out;
+  transition: opacity 0.7s ease-out, width 0.3s ease-out, height 0.3s ease-out,
+    margin-top 0.3s ease-out;
 }
 
 .loading-bar-outer {
@@ -101,9 +120,10 @@ canvas {
   left: 50%;
   transform: translateX(-50%);
   color: #3becc3;
-  font-size: 16px;
+  font-size: 16px; /* Default font size */
   font-weight: bold;
   text-shadow: 0 0 10px rgba(59, 236, 195, 0.8);
+  transition: font-size 0.3s ease-out;
 }
 
 /* Background Effects */
@@ -124,7 +144,7 @@ canvas {
   z-index: 5;
 }
 
-/* Water wave effect */
+/* Water wave effect (retained) */
 .preloader-container::before {
   content: "";
   position: absolute;
@@ -142,6 +162,17 @@ canvas {
   z-index: 0;
 }
 
+/* Exit Animations (simplified) */
+@keyframes preloaderExitAnim {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Animations */
 @keyframes waterWave {
   0% {
     transform: translateX(0) translateY(0) rotate(0deg);
@@ -160,24 +191,6 @@ canvas {
   }
 }
 
-/* Exit Animations (simplified) */
-/* Removed specific letter-exit, logo-exit, loading-bar-exit, particles-exit classes */
-/* The main preloader-container now handles the exit animation */
-
-@keyframes preloaderExitAnim {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-/* Removed individual letter exit animations */
-/* Removed logo3DExitAnim */
-/* Removed loadingBar3DExitAnim */
-/* Removed particles3DExitAnim */
-
 @keyframes pulse {
   0%,
   100% {
@@ -190,7 +203,6 @@ canvas {
   }
 }
 
-/* Loading Bar Animation (remains for initial loading) */
 @keyframes loadingBarGlow {
   0%,
   100% {
@@ -203,21 +215,6 @@ canvas {
   }
 }
 
-.preloader-logo {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 120px;
-  height: auto;
-  opacity: 0;
-  z-index: 10;
-  animation: glow 2s ease-in-out infinite alternate;
-  filter: drop-shadow(16px 16px 20px #3becc3) invert(75%);
-  transition: filter 0.3s ease-in-out, opacity 0.7s ease-out; /* Added opacity transition */
-  will-change: transform, filter, opacity; /* Added opacity to will-change */
-}
-
 @keyframes glow {
   from {
     filter: drop-shadow(0 0 20px rgba(59, 236, 195, 0.8))
@@ -227,5 +224,57 @@ canvas {
     filter: drop-shadow(0 0 30px rgba(59, 236, 195, 0.9))
       drop-shadow(0 0 60px rgba(59, 236, 195, 0.7))
       drop-shadow(0 0 80px rgba(59, 236, 195, 0.5));
+  }
+}
+
+/* --- MEDIA QUERIES FOR RESPONSIVENESS --- */
+
+/* Tablet styles (e.g., screens up to 768px wide) */
+@media (max-width: 768px) {
+  .logo-container {
+    gap: 20px; /* Reduce gap between elements */
+  }
+
+  .preloader-logo {
+    width: 90px; /* Smaller image logo */
+  }
+
+  .mvibe-logo {
+    width: 100%; /* Reduce SVG base width */
+    height: 240px; /* Adjust height proportionally (400/1.66) */
+  }
+
+  .loading-bar-container {
+    height: 18px;
+    margin-top: 20px;
+  }
+
+  .loading-percentage {
+    font-size: 14px;
+  }
+}
+
+/* Mobile styles (e.g., screens up to 480px wide) */
+@media (max-width: 480px) {
+  .logo-container {
+    gap: 15px; /* Further reduce gap */
+  }
+
+  .preloader-logo {
+    width: 70px; /* Even smaller image logo */
+  }
+
+  .mvibe-logo {
+    width: 100%; /* Further reduce SVG base width */
+    height: 180px; /* Adjust height proportionally (300/1.66) */
+  }
+
+  .loading-bar-container {
+    height: 16px;
+    margin-top: 15px;
+  }
+
+  .loading-percentage {
+    font-size: 13px;
   }
 }
