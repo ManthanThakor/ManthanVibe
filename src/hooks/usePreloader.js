@@ -10,79 +10,67 @@ const usePreloader = () => {
     const totalImages = images.length;
     let loadedImages = 0;
 
+    // Preload a single image (handles cached and uncached cases)
     const preloadImage = (img) => {
       return new Promise((resolve) => {
         if (img.complete) {
           loadedImages++;
-          // setProgress dynamically based on total preload process, not just image count
           resolve();
         } else {
-          img.onload = () => {
+          img.onload = img.onerror = () => {
             loadedImages++;
-            // setProgress dynamically
-            resolve();
-          };
-          img.onerror = () => {
-            loadedImages++;
-            // setProgress dynamically
             resolve();
           };
         }
       });
     };
 
+    // Preload custom web fonts
     const preloadFonts = () => {
       return new Promise((resolve) => {
         const fonts = ["Orbitron", "Inter"];
         Promise.all(
           fonts.map((font) => document.fonts.load(`1em ${font}`))
-        ).then(() => {
-          resolve();
-        });
+        ).then(resolve);
       });
     };
 
+    // Simulate 3D model loading (e.g., GLTF, FBX, etc.)
     const preloadModels = () => {
       return new Promise((resolve) => {
-        // Simulate 3D model loading for a shorter duration
-        setTimeout(() => {
-          resolve();
-        }, 500); // Reduced from 1000ms
+        setTimeout(resolve, 500);
       });
     };
 
+    // Execute full preloading sequence with staged progress
     const preloadAll = async () => {
       if (!mounted) return;
-      try {
-        // Initial progress
-        setProgress(5);
-        await new Promise((resolve) => setTimeout(resolve, 200)); // Shorter initial delay
 
-        // Preload fonts (up to ~25%)
+      try {
+        setProgress(5);
+        await new Promise((r) => setTimeout(r, 200));
+
         await preloadFonts();
         setProgress(25);
-        await new Promise((resolve) => setTimeout(resolve, 300)); // Shorter delay
+        await new Promise((r) => setTimeout(r, 300));
 
-        // Preload images (up to ~55%)
         await Promise.all(Array.from(images).map(preloadImage));
         setProgress(55);
-        await new Promise((resolve) => setTimeout(resolve, 300)); // Shorter delay
+        await new Promise((r) => setTimeout(r, 300));
 
-        // Preload 3D models (up to ~85%)
         await preloadModels();
         setProgress(85);
-        await new Promise((resolve) => setTimeout(resolve, 300)); // Shorter delay
+        await new Promise((r) => setTimeout(r, 300));
 
-        // Ensure we reach approximately 3.5 seconds total
         const startTime = Date.now();
-        const targetDuration = 3500; // Target 3.5 seconds in milliseconds
+        const targetDuration = 3500;
 
+        // Smoothly animate final 15% progress to reach 100%
         const progressInterval = setInterval(() => {
           const elapsedTime = Date.now() - startTime;
-          // Interpolate progress smoothly to 100% within the remaining time
           const newProgress = Math.min(
             100,
-            85 + (elapsedTime / (targetDuration * 0.5)) * 15 // Last 15% takes longer
+            85 + (elapsedTime / (targetDuration * 0.5)) * 15
           );
           setProgress(Math.round(newProgress));
 
@@ -95,7 +83,7 @@ const usePreloader = () => {
               });
             });
           }
-        }, 30); // Faster interval for smoother updates
+        }, 30);
       } catch (error) {
         console.error("Error during preloading:", error);
         setIsLoading(false);

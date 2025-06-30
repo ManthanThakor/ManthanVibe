@@ -11,7 +11,7 @@ const PreLoader = ({ progress, isLoading }) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [hasStartedExit, setHasStartedExit] = useState(false);
 
-  // Enhanced Three.js particle system with glow
+  // Initialize Three.js particle system with glowing effect
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -22,17 +22,11 @@ const PreLoader = ({ progress, isLoading }) => {
       0.1,
       1000
     );
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-    });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // Append renderer to container and store the DOM element for cleanup
     particlesRef.current = renderer.domElement;
     containerRef.current.appendChild(renderer.domElement);
 
-    // Create glowing particles
     const particleCount = 2000;
     const particles = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
@@ -40,13 +34,12 @@ const PreLoader = ({ progress, isLoading }) => {
     const sizes = new Float32Array(particleCount);
     const color = new THREE.Color();
 
+    // Set particle attributes
     for (let i = 0; i < particleCount; i++) {
-      // Positions
       positions[i * 3] = (Math.random() - 0.5) * 2000;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
 
-      // Colors – vibrant teal with variations
       const hue = 0.45 + Math.random() * 0.1;
       const saturation = 0.9;
       const lightness = 0.5 + Math.random() * 0.4;
@@ -55,14 +48,14 @@ const PreLoader = ({ progress, isLoading }) => {
       colors[i * 3 + 1] = color.g;
       colors[i * 3 + 2] = color.b;
 
-      // Sizes – larger for more glow
       sizes[i] = 3 + Math.random() * 5;
     }
+
     particles.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     particles.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     particles.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
-    // Particle material with more glow
+    // Configure particle material
     const particleMaterial = new THREE.PointsMaterial({
       size: 4,
       vertexColors: true,
@@ -71,27 +64,23 @@ const PreLoader = ({ progress, isLoading }) => {
       blending: THREE.AdditiveBlending,
       sizeAttenuation: true,
     });
+
     const particleSystem = new THREE.Points(particles, particleMaterial);
     scene.add(particleSystem);
-
     camera.position.z = 500;
 
-    // Animation loop: now store the requestAnimationFrame ID
     let reqId;
     function animate() {
       reqId = requestAnimationFrame(animate);
 
-      // More dynamic rotation
       particleSystem.rotation.x += 0.0008;
       particleSystem.rotation.y += 0.0012;
 
-      // Enhanced pulse effect
       const time = Date.now() * 0.0005;
       particleSystem.scale.x = 1 + Math.sin(time * 3) * 0.15;
       particleSystem.scale.y = 1 + Math.cos(time * 2) * 0.15;
       particleSystem.scale.z = 1 + Math.sin(time * 4) * 0.1;
 
-      // Color pulse effect
       const colorTime = Date.now() * 0.001;
       const hue = 0.45 + Math.sin(colorTime * 0.5) * 0.05;
       particleSystem.material.color.setHSL(hue, 0.9, 0.6);
@@ -107,9 +96,10 @@ const PreLoader = ({ progress, isLoading }) => {
     };
     window.addEventListener("resize", handleResize);
 
+    // Cleanup on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
-      cancelAnimationFrame(reqId); // cancel the animation loop on cleanup
+      cancelAnimationFrame(reqId);
       if (containerRef.current && particlesRef.current) {
         containerRef.current.removeChild(particlesRef.current);
       }
@@ -117,23 +107,21 @@ const PreLoader = ({ progress, isLoading }) => {
     };
   }, []);
 
-  // Main exit sequence for when isLoading becomes false
+  // Exit animation sequence when loading finishes
   useEffect(() => {
     let mounted = true;
     if (!isLoading && containerRef.current && mounted && !hasStartedExit) {
       setHasStartedExit(true);
       const exitSequence = async () => {
         try {
-          // Final flash and container exit (simplified)
           const finalFlash = document.createElement("div");
           finalFlash.className = "exit-flash";
           containerRef.current.appendChild(finalFlash);
 
-          // Animate opacity of the preloader container for a smooth fade out
           anime({
             targets: containerRef.current,
             opacity: [1, 0],
-            duration: 800, // Duration for fade out
+            duration: 800,
             easing: "easeOutQuad",
             complete: () => {
               if (containerRef.current) {
@@ -143,7 +131,6 @@ const PreLoader = ({ progress, isLoading }) => {
             },
           });
 
-          // Animate out the logo and loading bar along with the main container
           const logo = document.querySelector(".preloader-logo");
           const loadingBar = document.querySelector(".loading-bar-container");
 
@@ -179,41 +166,37 @@ const PreLoader = ({ progress, isLoading }) => {
     }
   }, [isLoading, hasStartedExit]);
 
-  // Progress and primary animations
+  // Progress bar and logo entry animation
   useEffect(() => {
     if (!isLoading) return;
 
-    // Progress animation for the loading bar
     const progressAnimation = anime({
       targets: ".loading-bar-inner",
       width: ["0%", "100%"],
-      duration: 3000, // Reduced duration for faster preload
+      duration: 3000,
       easing: "easeInOutQuart",
       update: function (anim) {
         setLoadingProgress(Math.round(anim.progress));
       },
     });
 
-    // Logo animation with a bounce-from-left effect
-    // Entry animation (fade + scale + glow)
     anime({
       targets: ".preloader-logo",
       opacity: [0, 1],
       scale: [0.5, 1.1, 1],
-      duration: 1200, // Reduced duration
+      duration: 1200,
       easing: "easeInOutQuad",
-      delay: 200, // Reduced delay
+      delay: 200,
       complete: () => {
-        // After appearing, apply subtle glowing orbit motion
         anime({
           targets: ".preloader-logo",
           translateX: [
-            { value: 10, duration: 1200 }, // Reduced duration
-            { value: -10, duration: 1200 }, // Reduced duration
+            { value: 10, duration: 1200 },
+            { value: -10, duration: 1200 },
           ],
           translateY: [
-            { value: 5, duration: 1200 }, // Reduced duration
-            { value: -5, duration: 1200 }, // Reduced duration
+            { value: 5, duration: 1200 },
+            { value: -5, duration: 1200 },
           ],
           direction: "alternate",
           loop: true,
@@ -222,7 +205,7 @@ const PreLoader = ({ progress, isLoading }) => {
       },
     });
 
-    // Letters animation timeline (retained for initial entry)
+    // Letter-by-letter animation for logo
     const timeline = anime.timeline({
       easing: "easeInOutQuad",
       complete: function () {
@@ -242,66 +225,66 @@ const PreLoader = ({ progress, isLoading }) => {
         targets: ".letter-m .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 500, // Reduced duration
-        offset: 400, // Reduced offset
+        duration: 500,
+        offset: 400,
       })
       .add({
         targets: ".letter-m .letter-fill",
         opacity: [0, 0.7],
-        duration: 250, // Reduced duration
-        offset: 800, // Reduced offset
+        duration: 250,
+        offset: 800,
       })
       .add({
         targets: ".letter-v .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 500, // Reduced duration
-        offset: 1000, // Reduced offset
+        duration: 500,
+        offset: 1000,
       })
       .add({
         targets: ".letter-v .letter-fill",
         opacity: [0, 0.7],
-        duration: 250, // Reduced duration
-        offset: 1400, // Reduced offset
+        duration: 250,
+        offset: 1400,
       })
       .add({
         targets: ".letter-i .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 500, // Reduced duration
-        offset: 1600, // Reduced offset
+        duration: 500,
+        offset: 1600,
       })
       .add({
         targets: ".letter-i .letter-fill",
         opacity: [0, 0.7],
-        duration: 250, // Reduced duration
-        offset: 2000, // Reduced offset
+        duration: 250,
+        offset: 2000,
       })
       .add({
         targets: ".letter-b .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 500, // Reduced duration
-        offset: 2200, // Reduced offset
+        duration: 500,
+        offset: 2200,
       })
       .add({
         targets: ".letter-b .letter-fill",
         opacity: [0, 0.7],
-        duration: 250, // Reduced duration
-        offset: 2600, // Reduced offset
+        duration: 250,
+        offset: 2600,
       })
       .add({
         targets: ".letter-e .letter-outline",
         strokeDashoffset: [anime.setDashoffset, 0],
         opacity: [0, 1],
-        duration: 500, // Reduced duration
-        offset: 2800, // Reduced offset
+        duration: 500,
+        offset: 2800,
       })
       .add({
         targets: ".letter-e .letter-fill",
         opacity: [0, 0.7],
-        duration: 250, // Reduced duration
-        offset: 3100, // Reduced offset
+        duration: 250,
+        offset: 3100,
       });
 
     timelineRef.current = timeline;
@@ -452,6 +435,7 @@ const PreLoader = ({ progress, isLoading }) => {
             />
           </g>
         </svg>
+
         {/* 3D Loading Bar */}
         <div className="loading-bar-container">
           <div className="loading-bar-outer"></div>
